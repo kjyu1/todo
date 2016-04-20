@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo app</title>
+    <script type="text/javascript" src="https://ajax.microsoft.com/ajax/jQuery/jquery-1.4.2.min.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+            $("tr:even").css("background-color", "gray");
+            $("tr:odd").css("background-color", "blue");
+        });
+    </script>
+</head>
+
+<body>
+    <table id="task-table">
+        <tr bgcolor="gray">
+            <td><font color="yellow"><strong>Task</strong></font></td>
+        </tr>
+        <tr>
+            <td>Task 2</td>
+        </tr>
+        <tr>
+            <td>Task 3</td>
+        </tr>
+    </table>
+</body>
+
+</html>
