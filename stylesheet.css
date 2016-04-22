@@ -3,6 +3,10 @@
 tr:nth-child(even) {
     background-color: blue;
 }
-tr:nth-child(odd) {
-    background-color: gray;
+/*tr:nth-child(odd) {*/
+    /*background-color: gray;*/
+/*}*/
+.checked1 {
+    background-color: gray !important;
+    text-decoration: line-through;
 }
