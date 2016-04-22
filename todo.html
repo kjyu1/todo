@@ -4,17 +4,6 @@
     <title>Todo app</title>
     <script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
-    <script>
-        var addTableRow = function()
-        {
-            var tr = $('<tr/>');
-            var td = $('<td/>').html($(newTask)[0].value);
-            //td.append('<td><input type="button" value="x" onclick="deleteTableRow()"></td>');
-            $('#task-table').append(tr.append('<td><input type="checkbox" class="checkbox"></td>').append(td).append('<td><input type="button" value="x" class="del-btn"></td>'));
-            $('#newTask')[0].value = "";
-        };
-
-    </script>
 </head>
 
 <body>
@@ -24,18 +13,18 @@
         </tr>
         <tr>
             <td><input type="checkbox" class="checkbox"></td>
-            <td>Task 2</td>
+            <td class="taskname">Task 2</td>
             <td><input type="button" value="x" class="del-btn"></td>
         </tr>
         <tr>
             <td><input type="checkbox" class="checkbox"></td>
-            <td>Task 3</td>
+            <td class="taskname">Task 3</td>
             <td><input type="button" value="x" class="del-btn"></td>
         </tr>
 
     </table>
     <input type="text" id="newTask" placeholder="Input Task">
-    <input type="submit" value="Submit" id="newTaskButton" onclick="addTableRow()">
+    <input type="submit" value="Submit" id="newTaskButton">
 </body>
 
 <script>
@@ -59,15 +48,17 @@
                 tr.find('.del-btn').prop('disabled', false);
             }
         });
-//        $("#task-table").on('click', '#newTaskButton', function()
-//        {
-//
-//            var tr = $('<tr/>');
-//            var td = $('<td/>').html($(newTask)[0].value);
-//            //td.append('<td><input type="button" value="x" onclick="deleteTableRow()"></td>');
-//            $('#task-table').append(tr.append('<td><input type="checkbox" class="checkbox"></td>').append(td).append('<td><input type="button" value="x" class="del-btn"></td>'));
-//            $('#newTask')[0].value = "";
-//        })
+        $("#newTaskButton").on('click', function()
+        {
+            var tr = $('<tr/>');
+
+            var td1 = $('<td><input type="checkbox" class="checkbox"></td>');
+            var td2 = $('<td class="taskname">' + $(newTask)[0].value+'</td>');
+            var td3 = $('<td><input type="button" value="x" class="del-btn"></td>');
+
+            $('#task-table').append(tr.append([td1,td2,td3]));
+            $('#newTask')[0].value = "";
+        });
     });
 </script>
 

@@ -8,5 +8,9 @@ tr:nth-child(even) {
 /*}*/
 .checked1 {
     background-color: gray !important;
+    /*text-decoration: line-through;*/
+}
+
+.checked1 .taskname {
     text-decoration: line-through;
 }
