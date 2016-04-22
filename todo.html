@@ -9,21 +9,27 @@
 <body>
     <table id="task-table">
         <tr bgcolor="gray">
+            <td></td>
             <td><font color="yellow"><strong>Task</strong></font></td>
+            <td>Due Date</td>
+            <td></td>
         </tr>
         <tr>
             <td><input type="checkbox" class="checkbox"></td>
             <td class="taskname">Task 2</td>
+            <td type="date">2016-04-20</td>
             <td><input type="button" value="x" class="del-btn"></td>
         </tr>
         <tr>
             <td><input type="checkbox" class="checkbox"></td>
             <td class="taskname">Task 3</td>
+            <td type="date">2016-04-21</td>
             <td><input type="button" value="x" class="del-btn"></td>
         </tr>
 
     </table>
     <input type="text" id="newTask" placeholder="Input Task">
+    <input type="date" id="newDueDate">
     <input type="submit" value="Submit" id="newTaskButton">
 </body>
 
@@ -53,11 +59,13 @@
             var tr = $('<tr/>');
 
             var td1 = $('<td><input type="checkbox" class="checkbox"></td>');
-            var td2 = $('<td class="taskname">' + $(newTask)[0].value+'</td>');
-            var td3 = $('<td><input type="button" value="x" class="del-btn"></td>');
+            var td2 = $('<td class="taskname">'+$('#newTask')[0].value+'</td>');
+            var td3 = $('<td type="date">'+$('#newDueDate')[0].value+'</td>');
+            var td4 = $('<td><input type="button" value="x" class="del-btn"></td>');
 
-            $('#task-table').append(tr.append([td1,td2,td3]));
+            $('#task-table').append(tr.append([td1,td2,td3,td4]));
             $('#newTask')[0].value = "";
+            $('#newDueDate')[0].value = "";
         });
     });
 </script>
