@@ -9,7 +9,7 @@
 <body>
     <table id="task-table">
         <tr bgcolor="gray">
-            <th></th>
+            <th><input type="checkbox" id="allChecked"></th>
             <th><font color="yellow"><strong>Task</strong></font></th>
             <th>Due Date</th>
             <th></th>
@@ -34,39 +34,65 @@
 </body>
 
 <script>
+    function deleteRow(){
+        $(this).parent().parent().remove();
+    };
+
+    function clickCheckbox() {
+        var tr = $(this).parent().parent()
+        var delbtns = tr.find('.del-btn');
+        if (this.checked) {
+            tr.addClass('checked1');
+
+            delbtns.prop('disabled', true);
+
+        }
+        else {
+            tr.removeClass('checked1');
+
+            delbtns.prop('disabled', false);
+        }
+    };
+
+    function allCheckbox() {
+        var tds = $(document).find('tr td');
+        var checks = tds.find('.checkbox');
+        var dels = tds.find('.del-btn');
+//            var tasks = tr.find('.taskname');
+
+        if (this.checked) {
+            checks.prop('checked', true);
+            tds.parent().addClass('checked1');
+            dels.prop('disabled', true);
+
+        }
+        else {
+            checks.prop('checked', false);
+            tds.parent().removeClass('checked1');
+            dels.prop('disabled', false);
+        }
+    };
+
+    function addRows() {
+        var tr = $('<tr/>');
+
+        var td1 = $('<td><input type="checkbox" class="checkbox"></td>');
+        var td2 = $('<td class="taskname">'+$('#newTask')[0].value+'</td>');
+        var td3 = $('<td type="date">'+$('#newDueDate')[0].value+'</td>');
+        var td4 = $('<td><input type="button" value="x" class="del-btn"></td>');
+
+        ttable.append(tr.append([td1,td2,td3,td4]));
+        $('#newTask')[0].value = "";
+        $('#newDueDate')[0].value = "";
+    };
+
+    var ttable;
     $(document).ready(function(){
-        $("#task-table").on('click', '.del-btn', function()
-        {
-            $(this).parent().parent().remove();
-        });
-        $("#task-table").on('click', '.checkbox', function()
-        {
-            var tr = $(this).parent().parent()
-            if (this.checked) {
-                tr.addClass('checked1');
-
-                tr.find('.del-btn').prop('disabled', true);
-
-            }
-            else {
-                tr.removeClass('checked1');
-
-                tr.find('.del-btn').prop('disabled', false);
-            }
-        });
-        $("#newTaskButton").on('click', function()
-        {
-            var tr = $('<tr/>');
-
-            var td1 = $('<td><input type="checkbox" class="checkbox"></td>');
-            var td2 = $('<td class="taskname">'+$('#newTask')[0].value+'</td>');
-            var td3 = $('<td type="date">'+$('#newDueDate')[0].value+'</td>');
-            var td4 = $('<td><input type="button" value="x" class="del-btn"></td>');
-
-            $('#task-table').append(tr.append([td1,td2,td3,td4]));
-            $('#newTask')[0].value = "";
-            $('#newDueDate')[0].value = "";
-        });
+        ttable = $("#task-table");
+        ttable.on('click', '.del-btn', deleteRow);
+        ttable.on('click', '.checkbox', clickCheckbox);
+        ttable.on('click', '#allChecked', allCheckbox);
+        $("#newTaskButton").on('click', addRows);
     });
 </script>
 
