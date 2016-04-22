@@ -2,13 +2,18 @@
 <html>
 <head>
     <title>Todo app</title>
-    <script type="text/javascript" src="https://ajax.microsoft.com/ajax/jQuery/jquery-1.4.2.min.js"></script>
+    <script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
     <script>
-        $(document).ready(function()
+        var addTableRow = function()
         {
-            $("tr:even").css("background-color", "gray");
-            $("tr:odd").css("background-color", "blue");
-        });
+            var tr = $('<tr/>');
+            var td = $('<td/>').html($(newTask)[0].value);
+            //td.append('<td><input type="button" value="x" onclick="deleteTableRow()"></td>');
+            $('#task-table').append(tr.append(td).append('<td><input type="button" value="x" class="del-btn"></td>'));
+            $('#newTask')[0].value = "";
+        };
+
     </script>
 </head>
 
@@ -19,11 +24,29 @@
         </tr>
         <tr>
             <td>Task 2</td>
+            <td><input type="button" value="x" class="del-btn"></td>
         </tr>
         <tr>
             <td>Task 3</td>
+            <td><input type="button" value="x" class="del-btn"></td>
         </tr>
+
     </table>
+    <input type="text" id="newTask" placeholder="Input Task">
+    <input type="submit" value="Submit" onclick="addTableRow()">
 </body>
+
+<script>
+    $(document).ready(function(){
+        $("#task-table").on('click', '.del-btn', function()
+        {
+            $(this).parent().parent().remove();
+        })
+//        $(".del-btn").on('click', function()
+//        {
+//            $(this).parent().parent().remove();
+//        })
+    });
+</script>
 
 </html>
