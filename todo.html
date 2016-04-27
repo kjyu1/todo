@@ -9,24 +9,11 @@
 <body>
     <table id="task-table">
         <tr bgcolor="gray">
-            <th><input type="checkbox" id="allChecked"></th>
+            <th><input type="checkbox" id="allChecked" checked="true"></th>
             <th><font color="yellow"><strong>Task</strong></font></th>
             <th>Due Date</th>
             <th></th>
         </tr>
-        <tr>
-            <td><input type="checkbox" class="checkbox"></td>
-            <td class="taskname">Task 2</td>
-            <td type="date">2016-04-20</td>
-            <td><input type="button" value="x" class="del-btn"></td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" class="checkbox"></td>
-            <td class="taskname">Task 3</td>
-            <td type="date">2016-04-21</td>
-            <td><input type="button" value="x" class="del-btn"></td>
-        </tr>
-
     </table>
     <input type="text" id="newTask" placeholder="Input Task">
     <input type="date" id="newDueDate">
@@ -34,56 +21,163 @@
 </body>
 
 <script>
+    $.ajax({
+        url:"http://thiman.me:1337/kevin",
+        method: "GET",
+        data: "",
+        success: function(response) {
+            for(var i = 0; i < response.data.length; i++) {
+                var task = response.data[i];
+                var tr = $('<tr/>');
+                tr.attr('id',task._id);
+                var td1 = $('<td/>');
+                var input = $('<input/>')
+                td1.append(input);
+                input.attr('type', 'checkbox');
+                input.attr('class', 'checkbox');
+                input.prop('checked',task.status);
+
+                //var input = $('<input/>');
+                //setter
+                //input.attr('type', 'checkbox').attr('class','checkbox');
+                //getter
+                //input.attr('type);
+
+
+                var td2 = $('<td class="taskname">'+task.task+'</td>');
+                var td3 = $('<td type="date" class="date">'+task.due+'</td>');
+                var td4 = $('<td><input type="button" value="x" class="del-btn"></td>');
+
+                if (task.status) {
+                    tr.attr('class','checked1');
+
+                    td4 = $('<td><input type="button" value="x" class="del-btn" disabled="true"></td>');
+                } else {
+                    $('#allChecked').prop('checked',false);
+                }
+
+                ttable.append(tr.append([td1,td2,td3,td4]));
+            }
+        }
+    });
+
     function deleteRow(){
-        $(this).parent().parent().remove();
+        var tr = $(this).parent().parent();
+        var id = tr.attr('id');
+        $.ajax({
+            url: "http://thiman.me:1337/kevin/"+id,
+            method: "DELETE",
+            data: "",
+            success: function() {
+                tr.remove();
+            }
+        })
     };
 
     function clickCheckbox() {
-        var tr = $(this).parent().parent()
+        var tr = $(this).parent().parent();
+        var id = tr.attr('id');
         var delbtns = tr.find('.del-btn');
-        if (this.checked) {
-            tr.addClass('checked1');
 
-            delbtns.prop('disabled', true);
+        $.ajax({
+            url: "http://thiman.me:1337/kevin/"+id,
+            method: "PATCH",
+            data: {task: tr.find($('.taskname'))[0].innerHTML,
+                due: tr.find($('.date'))[0].innerHTML, status: this.checked},
+            success: function(response) {
+                if (response.data.status) {
+                    tr.addClass('checked1');
 
-        }
-        else {
-            tr.removeClass('checked1');
+                    delbtns.prop('disabled', true);
 
-            delbtns.prop('disabled', false);
-        }
+                }
+                else {
+                    tr.removeClass('checked1');
+
+                    delbtns.prop('disabled', false);
+
+                    $('#allChecked').prop('checked',false);
+                }
+            }
+        })
     };
 
     function allCheckbox() {
         var tds = $(document).find('tr td');
         var checks = tds.find('.checkbox');
-        var dels = tds.find('.del-btn');
-//            var tasks = tr.find('.taskname');
 
-        if (this.checked) {
-            checks.prop('checked', true);
-            tds.parent().addClass('checked1');
-            dels.prop('disabled', true);
+        for (var i = 0;i < checks.length; i++)
+        {
+            $(checks[i]).click();
 
-        }
-        else {
-            checks.prop('checked', false);
-            tds.parent().removeClass('checked1');
-            dels.prop('disabled', false);
         }
     };
 
     function addRows() {
-        var tr = $('<tr/>');
+        var task = $('#newTask')[0].value;
+        var dueDate = $('#newDueDate')[0].value;
+        $.ajax({
+           url:"http://thiman.me:1337/kevin",
+            method:"POST",
+            data: {task: task, due: dueDate, status: false},
+            success: function(response) {
+                var tr = $('<tr/>');
 
-        var td1 = $('<td><input type="checkbox" class="checkbox"></td>');
-        var td2 = $('<td class="taskname">'+$('#newTask')[0].value+'</td>');
-        var td3 = $('<td type="date">'+$('#newDueDate')[0].value+'</td>');
-        var td4 = $('<td><input type="button" value="x" class="del-btn"></td>');
+                var td1 = $('<td><input type="checkbox" class="checkbox"></td>');
+                tr.attr('id',response.data._id);
+                //var input = $('<input/>');
+                //setter
+                //input.attr('type', 'checkbox').attr('class','checkbox');
+                //getter
+                //input.attr('type);
 
-        ttable.append(tr.append([td1,td2,td3,td4]));
-        $('#newTask')[0].value = "";
-        $('#newDueDate')[0].value = "";
+                var td2 = $('<td class="taskname">'+task+'</td>');
+                var td3 = $('<td type="date">'+dueDate+'</td>');
+                var td4 = $('<td><input type="button" value="x" class="del-btn"></td>');
+
+                ttable.append(tr.append([td1,td2,td3,td4]));
+                $('#newTask')[0].value = "";
+                $('#newDueDate')[0].value = "";
+            }
+        });
+    };
+    function changeToInput() {
+        //<input type="text" id="newTask" placeholder="Input Task">
+          //  <input type="date" id="newDueDate">
+        var tr = $(this).parent();
+        var tn = tr.find('.taskname')[0];
+        var tdate = tr.find('.date')[0];
+        var submit = tr.find('.del-btn')[0];
+
+        var placeholderText = tn.innerHTML;
+        var placeholderDate = tdate.innerHTML;
+
+        $(tn).replaceWith('<td><input type="text" class="updateTask" value="'+placeholderText+'"></td>');
+        $(tdate).replaceWith('<td><input type="date" class="updateDate" value="'+placeholderDate+'"></td>');
+        $(submit).replaceWith('<input type="submit" value="Change" class="updateTaskButton">');
+    };
+    function update() {
+        var task = $('.updateTask')[0].value;
+        var dueDate = $('.updateDate')[0].value;
+
+        var tr = $(this).parent().parent();
+        var tn = tr.find('.updateTask')[0];
+        var tdate = tr.find('.updateDate')[0];
+        var submit = tr.find('.updateTaskButton')[0];
+
+        var id = tr.attr('id');
+
+        $.ajax({
+           url:"http://thiman.me:1337/kevin/"+id,
+           method:"PATCH",
+            data:{task:task, due:dueDate, status: false},
+            success:function(response) {
+                console.log(response);
+                $(tn).replaceWith('<td class="taskname">'+task+'</td>');
+                $(tdate).replaceWith('<td type="date">'+dueDate+'</td>');
+                $(submit).replaceWith('<input type="button" value="x" class="del-btn">');
+            }
+        });
     };
 
     var ttable;
@@ -92,7 +186,11 @@
         ttable.on('click', '.del-btn', deleteRow);
         ttable.on('click', '.checkbox', clickCheckbox);
         ttable.on('click', '#allChecked', allCheckbox);
+        ttable.on('click', '.taskname', changeToInput);
+        ttable.on('click', '.date', changeToInput);
+        ttable.on('click','.updateTaskButton',update);
         $("#newTaskButton").on('click', addRows);
+
     });
 </script>
 
